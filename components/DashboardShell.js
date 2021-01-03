@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { Logo } from '@/styles/icons';
 import { useAuth } from '@/lib/auth';
+import AddSiteModal from '@/components/AddSiteModal';
 
 const DashboardShell = ({ children }) => {
   const { user, signOut } = useAuth();
@@ -20,15 +21,14 @@ const DashboardShell = ({ children }) => {
     <Box bgColor="gray.100" h="100vh">
       <Flex bgColor="white" mb={16} w="full">
         <Flex
+          width="100%"
+          maxWidth="1250px"
           justifyContent="space-between"
           alignItems="center"
-          width="100%"
-          pt={4}
-          pb={4}
-          maxWidth="1250px"
           m="0 auto"
-          pl={8}
-          pr={8}
+          py={4}
+          px={8}
+          h="70px"
         >
           <Flex justifyContent="flex-start" alignItems="center">
             <Logo mr={8} />
@@ -36,10 +36,17 @@ const DashboardShell = ({ children }) => {
             <Link>Sites</Link>
           </Flex>
           <Flex justifyContent="flex-start" alignItems="center">
-            <Button variant="ghost" size="md" mr={2} onClick={() => signOut()}>
-              Log Out
-            </Button>
-            <Avatar size="sm" src={user.photoUrl} />
+            {user && (
+              <Button
+                variant="ghost"
+                size="md"
+                mr={2}
+                onClick={() => signOut()}
+              >
+                Log Out
+              </Button>
+            )}
+            <Avatar size="sm" src={user?.photoUrl} />
           </Flex>
         </Flex>
       </Flex>
@@ -51,20 +58,7 @@ const DashboardShell = ({ children }) => {
         </Breadcrumb>
         <Flex justifyContent="space-between">
           <Heading mb={8}>My Sites</Heading>
-          <Button
-            variant="solid"
-            size="md"
-            backgroundColor="gray.900"
-            color="white"
-            fontWeight="medium"
-            _hover={{ bgColor: 'gray.700' }}
-            _active={{
-              bgColor: 'gray.800',
-              transform: 'scale(0.95)'
-            }}
-          >
-            + Add Site
-          </Button>
+          <AddSiteModal>+ Add site</AddSiteModal>
         </Flex>
         {children}
       </Flex>
