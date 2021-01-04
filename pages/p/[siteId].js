@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { Box, FormControl, FormLabel, Input, Button } from '@chakra-ui/react';
-import { getAllFeedback, getAllSites } from '@/lib/db-admin';
-import { useAuth } from '@/lib/auth';
-import Feedback from '@/components/Feedback';
-import { createFeedback } from '@/lib/db';
 import useSWR from 'swr';
+import { Box, FormControl, FormLabel, Input, Button } from '@chakra-ui/react';
+import { useAuth } from '@/lib/auth';
+import { getAllFeedback, getAllSites } from '@/lib/db-admin';
+import { createFeedback } from '@/lib/db';
 import fetcher from '@/utils/fetcher';
+import Feedback from '@/components/Feedback';
 
 export async function getStaticProps(ctx) {
     const { siteId } = ctx.params;
@@ -46,7 +46,7 @@ function FeedbackPage({ initialFeedback }) {
         { initialData: { feedback: initialFeedback } }
     );
 
-    const allFeedback = data?.feedback || [];
+    const allFeedback = data?.feedback;
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -65,7 +65,12 @@ function FeedbackPage({ initialFeedback }) {
 
         setText('');
 
-        mutate((data) => [...data.feedback, newFeedback], false);
+        mutate(
+            (data) => ({
+                feedback: [...data.feedback, newFeedback]
+            }),
+            false
+        );
     };
 
     return (
@@ -93,7 +98,7 @@ function FeedbackPage({ initialFeedback }) {
                 </Box>
             )}
 
-            {allFeedback.map((feedback) => (
+            {allFeedback?.map((feedback) => (
                 <Feedback
                     key={feedback.createdAt}
                     isOwner={user && user.uid === feedback.authorId}
