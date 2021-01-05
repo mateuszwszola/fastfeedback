@@ -36,9 +36,8 @@ export async function getStaticPaths() {
 
 function FeedbackPage({ initialFeedback }) {
     const { user } = useAuth();
-    const {
-        query: { siteId }
-    } = useRouter();
+    const router = useRouter();
+    const { siteId } = router.query;
     const [text, setText] = useState('');
     const { data, mutate } = useSWR(
         user?.token ? [`/api/feedback/${siteId}`, user.token] : null,
@@ -67,7 +66,7 @@ function FeedbackPage({ initialFeedback }) {
 
         mutate(
             (data) => ({
-                feedback: [...data.feedback, newFeedback]
+                feedback: [...(data?.feedback || []), newFeedback]
             }),
             false
         );
@@ -99,11 +98,7 @@ function FeedbackPage({ initialFeedback }) {
             )}
 
             {allFeedback?.map((feedback) => (
-                <Feedback
-                    key={feedback.createdAt}
-                    isOwner={user && user.uid === feedback.authorId}
-                    {...feedback}
-                />
+                <Feedback key={feedback.createdAt} {...feedback} />
             ))}
         </Box>
     );

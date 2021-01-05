@@ -1,8 +1,7 @@
 import { Box, Heading, Text, Divider, Flex } from '@chakra-ui/react';
 import { format, parseISO } from 'date-fns';
-import DeleteFeedbackButton from '@/components/DeleteFeedbackButton';
 
-const Feedback = ({ id, author, text, createdAt, isOwner }) => (
+const Feedback = ({ author, text, createdAt }) => (
     <Box borderRadius={4} w="full" maxW="700px">
         <Flex align="center">
             <Heading
@@ -14,7 +13,6 @@ const Feedback = ({ id, author, text, createdAt, isOwner }) => (
             >
                 {author}
             </Heading>
-            {isOwner && <DeleteFeedbackButton ml={2} feedbackId={id} />}
         </Flex>
         <Text color="gray.500" mb={4} fontSize="xs">
             {format(parseISO(createdAt), 'PPpp')}
