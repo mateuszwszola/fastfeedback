@@ -1,20 +1,20 @@
 import PropTypes from 'prop-types';
 import { useDisclosure, useToast } from '@chakra-ui/react';
-import { deleteFeedback } from '@/lib/db';
+import { deleteSite } from '@/lib/db';
 import { mutate } from 'swr';
 import { useAuth } from '@/lib/auth';
 import DeleteButton from '@/components/DeleteButton';
 
-const DeleteFeedbackButton = ({ feedbackId, ...props }) => {
+const DeleteSiteButton = ({ siteId, ...props }) => {
     const { user } = useAuth();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const toast = useToast();
 
     const onDelete = () => {
-        deleteFeedback(feedbackId).catch(() => {
+        deleteSite(siteId).catch(() => {
             toast({
                 title: 'An error occurred.',
-                description: 'Unable to delete a comment.',
+                description: 'Unable to delete a site.',
                 status: 'error',
                 duration: 5000,
                 isClosable: true
@@ -22,12 +22,9 @@ const DeleteFeedbackButton = ({ feedbackId, ...props }) => {
         });
 
         mutate(
-            ['/api/feedback', user.token],
+            ['/api/sites', user.token],
             (data) => ({
-                feedback:
-                    data?.feedback.filter(
-                        (feedback) => feedback.id !== feedbackId
-                    ) || []
+                sites: data?.sites.filter((site) => site.id !== siteId) || []
             }),
             false
         );
@@ -37,7 +34,7 @@ const DeleteFeedbackButton = ({ feedbackId, ...props }) => {
 
     return (
         <DeleteButton
-            resourceName={'feedback'}
+            resourceName={'site'}
             isOpen={isOpen}
             onDelete={onDelete}
             onOpen={onOpen}
@@ -47,8 +44,8 @@ const DeleteFeedbackButton = ({ feedbackId, ...props }) => {
     );
 };
 
-DeleteFeedbackButton.propTypes = {
-    feedbackId: PropTypes.string.isRequired
+DeleteSiteButton.propTypes = {
+    siteId: PropTypes.string.isRequired
 };
 
-export default DeleteFeedbackButton;
+export default DeleteSiteButton;

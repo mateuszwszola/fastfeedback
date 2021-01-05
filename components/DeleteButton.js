@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import { mutate } from 'swr';
+import { useRef } from 'react';
+import PropTypes from 'prop-types';
 import {
     AlertDialog,
     AlertDialogBody,
@@ -10,42 +10,27 @@ import {
     IconButton,
     Button
 } from '@chakra-ui/react';
-
-import { deleteFeedback } from '@/lib/db';
-import { useAuth } from '@/lib/auth';
 import { DeleteIcon } from '@/styles/icons';
 
-const RemoveButton = ({ feedbackId }) => {
-    const [isOpen, setIsOpen] = useState();
+const DeleteButton = ({
+    isOpen,
+    onOpen,
+    onClose,
+    onDelete,
+    resourceName,
+    ...props
+}) => {
     const cancelRef = useRef();
-    const auth = useAuth();
-
-    const onClose = () => setIsOpen(false);
-    const onDelete = () => {
-        deleteFeedback(feedbackId);
-        mutate(
-            ['/api/feedback', auth.user.token],
-            async (data) => {
-                return {
-                    feedback: data.feedback.filter(
-                        (feedback) => feedback.id !== feedbackId
-                    )
-                };
-            },
-            false
-        );
-        onClose();
-    };
 
     return (
         <>
             <IconButton
-                aria-label="Delete feedback"
+                aria-label={`Delete ${resourceName}`}
                 icon={<DeleteIcon />}
                 variant="ghost"
-                onClick={() => setIsOpen(true)}
+                onClick={onOpen}
+                {...props}
             />
-
             <AlertDialog
                 isOpen={isOpen}
                 leastDestructiveRef={cancelRef}
@@ -54,18 +39,21 @@ const RemoveButton = ({ feedbackId }) => {
                 <AlertDialogOverlay />
                 <AlertDialogContent>
                     <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                        Delete Feedback
+                        Delete {resourceName}
                     </AlertDialogHeader>
-
                     <AlertDialogBody>
                         Are you sure? You can't undo this action afterwards.
                     </AlertDialogBody>
-
                     <AlertDialogFooter>
                         <Button ref={cancelRef} onClick={onClose}>
                             Cancel
                         </Button>
-                        <Button variantColor="red" onClick={onDelete} ml={3}>
+                        <Button
+                            fontWeight="bold"
+                            colorScheme="red"
+                            onClick={onDelete}
+                            ml={3}
+                        >
                             Delete
                         </Button>
                     </AlertDialogFooter>
@@ -75,4 +63,12 @@ const RemoveButton = ({ feedbackId }) => {
     );
 };
 
-export default RemoveButton;
+DeleteButton.propTypes = {
+    isOpen: PropTypes.bool.isRequired,
+    onOpen: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
+    resourceName: PropTypes.string.isRequired
+};
+
+export default DeleteButton;

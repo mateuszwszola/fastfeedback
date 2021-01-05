@@ -1,6 +1,6 @@
 import { Box, Code, Switch } from '@chakra-ui/react';
 import { Table, Tr, Th, Td } from './Table';
-import RemoveButton from '@/components/RemoveButton';
+import DeleteFeedbackButton from '@/components/DeleteFeedbackButton';
 
 const FeedbackTable = ({ allFeedback }) => {
     return (
@@ -29,7 +29,7 @@ const FeedbackTable = ({ allFeedback }) => {
                             />
                         </Td>
                         <Td>
-                            <RemoveButton feedbackId={feedback.id} />
+                            <DeleteFeedbackButton feedbackId={feedback.id} />
                         </Td>
                     </Box>
                 ))}
