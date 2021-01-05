@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 import AddSiteModal from '@/components/AddSiteModal';
 
-const SiteTableHeader = ({ isPaidAccount }) => (
+const SiteTableHeader = () => (
     <Box mx={4}>
         <Breadcrumb>
             <BreadcrumbItem>
