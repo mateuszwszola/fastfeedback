@@ -5,7 +5,7 @@ import { Logo } from '@/styles/icons';
 import { useAuth } from '@/lib/auth';
 
 const DashboardShell = ({ children }) => {
-    const { user, signOut } = useAuth();
+    const { user } = useAuth();
 
     return (
         <Box bgColor="gray.100" h="100vh">
@@ -40,14 +40,11 @@ const DashboardShell = ({ children }) => {
                     </Flex>
                     <Flex justify="center" align="center">
                         {user && (
-                            <Button
-                                onClick={() => signOut()}
-                                as="a"
-                                variant="ghost"
-                                mr={2}
-                            >
-                                Log Out
-                            </Button>
+                            <NextLink href="/account" passHref>
+                                <Button as="a" variant="ghost" mr={2}>
+                                    Account
+                                </Button>
+                            </NextLink>
                         )}
                         <Avatar size="sm" src={user?.photoUrl} />
                     </Flex>
