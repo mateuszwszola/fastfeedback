@@ -6,10 +6,12 @@ import SiteTable from '@/components/SiteTable';
 import { useAuth } from '@/lib/auth';
 import fetcher from '@/utils/fetcher';
 import SiteTableHeader from '@/components/SiteTableHeader';
+import UpgradeEmptyState from '@/components/UpgradeEmptyState';
 
 const Dashboard = () => {
     const { user } = useAuth();
     const { data } = useSWR(user ? ['/api/sites', user.token] : null, fetcher);
+    const isPaidAccount = user?.stripeRole !== 'free';
     const sites = data?.sites;
 
     if (!data) {
@@ -21,10 +23,19 @@ const Dashboard = () => {
         );
     }
 
+    if (sites?.length) {
+        return (
+            <DashboardShell>
+                <SiteTableHeader isPaidAccount={isPaidAccount} />
+                <SiteTable sites={sites} />
+            </DashboardShell>
+        );
+    }
+
     return (
         <DashboardShell>
-            <SiteTableHeader />
-            {sites.length ? <SiteTable sites={sites} /> : <EmptyState />}
+            <SiteTableHeader isPaidAccount={isPaidAccount} />
+            {isPaidAccount ? <EmptyState /> : <UpgradeEmptyState />}
         </DashboardShell>
     );
 };

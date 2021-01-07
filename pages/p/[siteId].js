@@ -1,7 +1,14 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
-import { Box, FormControl, FormLabel, Input, Button } from '@chakra-ui/react';
+import {
+    Box,
+    FormControl,
+    FormLabel,
+    Input,
+    Button,
+    useToast
+} from '@chakra-ui/react';
 import { useAuth } from '@/lib/auth';
 import { getAllFeedback, getAllSites } from '@/lib/db-admin';
 import { createFeedback } from '@/lib/db';
@@ -37,6 +44,7 @@ export async function getStaticPaths() {
 function FeedbackPage({ initialFeedback }) {
     const { user } = useAuth();
     const router = useRouter();
+    const toast = useToast();
     const { siteId } = router.query;
     const [text, setText] = useState('');
     const { data, mutate } = useSWR(
@@ -60,7 +68,15 @@ function FeedbackPage({ initialFeedback }) {
             status: 'pending'
         };
 
-        createFeedback(newFeedback);
+        createFeedback(newFeedback).catch((_error) => {
+            toast({
+                title: 'An error occurred.',
+                description: 'Unable to add a comment.',
+                status: 'error',
+                duration: 5000,
+                isClosable: true
+            });
+        });
 
         setText('');
 
