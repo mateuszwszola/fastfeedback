@@ -11,9 +11,9 @@ import { BrandButton } from '@/components/Button';
 import FeedbackLink from '@/components/FeedbackLink';
 import Feedback from '@/components/Feedback';
 
-const SITE_ID = 'cuRJwomYlX9K1s1T7S6E\n';
+const SITE_ID = 'cuRJwomYlX9K1s1T7S6E';
 
-export async function getStaticProps(context) {
+export async function getStaticProps(_context) {
     const { feedback } = await getAllFeedback(SITE_ID);
 
     return {
